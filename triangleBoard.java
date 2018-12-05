@@ -1,14 +1,12 @@
 import java.util.ArrayList;
 
 public class triangleBoard {
+    int remainingPegs, size;
     boolean[][] game;
-    int remainingPegs;
-    int size;
 
 
     public static class Space {
-        int row;
-        int column;
+        int row, column;
 
         @Override
         public String toString() {
@@ -32,10 +30,6 @@ public class triangleBoard {
         triangleBoard.Space from;
         triangleBoard.Space to;
 
-        /*@Override
-        public String toString() {
-            return from.toString() + "==>" + to.toString();
-        }*/
 
         public Move(triangleBoard.Space from, triangleBoard.Space to) {
             this.from = from;
@@ -44,17 +38,17 @@ public class triangleBoard {
 
         public boolean isValid(triangleBoard board) {
 
-            // Check if the coordinates are valid on the board
+            // make sure this spot even exists
             if (!from.isValid(board.size) || !to.isValid(board.size)) {
                 return false;
             }
 
-            // Confirm the 'from' space is occupied
+            // make sure there is a peg in the from spot
             if (!board.game[from.row][from.column]) {
                 return false;
             }
 
-            // Confirm the 'to' space is empty
+            // check the to space doesnt have a peg
             if (board.game[to.row][to.column]) {
                 return false;
             }
@@ -76,43 +70,44 @@ public class triangleBoard {
                 return false;
             }
 
-            // Confirm the 'step' space is occupied
+            // make sure the jump spot has a peg
             return board.game[(from.row + to.row) / 2][(from.column + to.column) / 2];
         }
     }
 
-    public void setup(int dim, triangleBoard.Space hole) {
-        size = dim;
-        game = new boolean[dim][dim];
+    public void setup(int num, triangleBoard.Space spot) {
+        size = num;
+        game = new boolean[num][num];
         remainingPegs = -1;
 
-        // Populate the initial board
-        for (int i = 0; i < dim; i++) {
+        // init the board with pegs 
+        for (int i = 0; i < num; i++) {
             for (int j = 0; j <= i; j++) {
                 game[i][j] = true;
                 remainingPegs++;
             }
         }
 
-        game[hole.row][hole.column] = false;
+        game[spot.row][spot.column] = false;
     }
 
+    //jump a peg
     public boolean move(Move move) {
         if (!move.isValid(this)) {
             System.out.println("Invalid move.");
             return false;
         }
 
-        // Set the 'from' space to empty
+        // change from to empty
         game[move.from.row][move.from.column] = false;
 
-        // Set the 'to' space to occupied
+        // change to to occupied
         game[move.to.row][move.to.column] = true;
 
-        // Set the 'step' space to empty
+        // change step to empty
         game[(move.from.row + move.to.row) / 2][(move.from.column + move.to.column) / 2] = false;
 
-        // Lower the amount of pegs left
+        //remove the jumped peg
         remainingPegs--;
 
         return true;
@@ -120,13 +115,13 @@ public class triangleBoard {
 
     public void undoMove(Move move) {
 
-        // Set 'from' space to occupied
+        // change the from to filled
         game[move.from.row][move.from.column] = true;
 
-        // Set 'to' space to free
+        // change to to empty
         game[move.to.row][move.to.column] = false;
 
-        // Set 'step' space to occupied
+        // change the step to filled
         game[(move.from.row + move.to.row)/2][(move.from.column + move.to.column)/2] = true;
 
         // Increment number of pegs left on the board
@@ -136,17 +131,17 @@ public class triangleBoard {
     public ArrayList<Move> validMovesFromSpace(Space from) {
         ArrayList<Move> moves = new ArrayList<Move>();
 
-        // Check if move is valid on the board
+        // see if the move is valid on the game board
         if (!from.isValid(size)) {
             return moves;
         }
 
-        // Confirm space is not empty
+        // make sure the space is not empty
         if (!game[from.row][from.column]) {
             return moves;
         }
 
-        // Check if we can move to adjacent spaces
+        // see if you can move to adjacent spots
         Move move = new Move(from, new Space(from.row - 2, from.column));
 
         if (move.isValid(this)) {
@@ -214,7 +209,6 @@ public class triangleBoard {
         for (int i = 0; i < moves.size(); i++) {
             this.move(moves.get(i));
 
-            // Win condition
             if (remainingPegs == 1) {
                 sequence.add(moves.get(i));
                 this.undoMove(moves.get(i));
@@ -222,7 +216,6 @@ public class triangleBoard {
                 return sequence;
             }
 
-            // Recurse
             ArrayList<Move> moveSequence = this.bestSequence();
 
             if (moveSequence.size() + 1 > sequence.size()) {
@@ -237,9 +230,9 @@ public class triangleBoard {
         return sequence;
     }
 
-    public static int boolToInt(Boolean bool) {
+   /* public static int boolToInt(Boolean bool) {
         return bool ? 1 : 0;
-    }
+    } */
 
     public void printState(boolean[][] board) {
         for(int i = 0; i < size; i++) {
@@ -248,7 +241,7 @@ public class triangleBoard {
                 System.out.print(" ");
             }
             for(int j = 0; j <= i; j++) {
-                System.out.print(triangleBoard.boolToInt(board[i][j]));
+                System.out.print(board[i][j] ? 1 : 0);  //triangleBoard.boolToInt(board[i][j])
                 System.out.print(" ");
             }
             System.out.println();

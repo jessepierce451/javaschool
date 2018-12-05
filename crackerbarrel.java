@@ -15,26 +15,23 @@ public class crackerbarrel {
 
         for(int i = 0; i < beginPos.size(); i++) {
 
-            // Get next starting position
+            //iterates through the first spot without a peg for each new game
             triangleBoard.Space begin = beginPos.get(i);
 
             System.out.println("\n=== " + begin + " ===");
 
-            // Initialize the board
+            //init the gamebaord for play
             game.setup(5, begin);
 
-            // Get the best sequence of moves to win
+            //returns the best play out of possible plays
             ArrayList<triangleBoard.Move> gameSeq = game.bestSequence();
 
-            // Print the move
+            //Print the state of the gameboard
             System.out.println();
             game.printState(game.game);
 
             for(int j = 0; j < gameSeq.size(); j++){
-                //System.out.println("\n" + gameSeq.get(j) + "\n");
-
                 game.move(gameSeq.get(j));
-
                 game.printState(game.game);
             }
         }
