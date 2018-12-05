@@ -2,26 +2,9 @@ import java.util.ArrayList;
 
 public class triangleBoard {
     boolean[][] game;
-    int pegsLeft;
+    int remainingPegs;
     int size;
 
-    public static int boolToInt(Boolean bool) {
-        return bool ? 1 : 0;
-    }
-
-    public void printState(boolean[][] board) {
-        for(int i = 0; i < size; i++) {
-            System.out.print("  ");
-            for(int k = 0; k < (size - i - 1); k++) {
-                System.out.print(" ");
-            }
-            for(int j = 0; j <= i; j++) {
-                System.out.print(triangleBoard.boolToInt(board[i][j]));
-                System.out.print(" ");
-            }
-            System.out.println();
-        }
-    }
 
     public static class Space {
         int row;
@@ -49,10 +32,10 @@ public class triangleBoard {
         triangleBoard.Space from;
         triangleBoard.Space to;
 
-        @Override
+        /*@Override
         public String toString() {
             return from.toString() + "==>" + to.toString();
-        }
+        }*/
 
         public Move(triangleBoard.Space from, triangleBoard.Space to) {
             this.from = from;
@@ -101,13 +84,13 @@ public class triangleBoard {
     public void setup(int dim, triangleBoard.Space hole) {
         size = dim;
         game = new boolean[dim][dim];
-        pegsLeft = -1;
+        remainingPegs = -1;
 
         // Populate the initial board
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j <= i; j++) {
                 game[i][j] = true;
-                pegsLeft++;
+                remainingPegs++;
             }
         }
 
@@ -130,7 +113,7 @@ public class triangleBoard {
         game[(move.from.row + move.to.row) / 2][(move.from.column + move.to.column) / 2] = false;
 
         // Lower the amount of pegs left
-        pegsLeft--;
+        remainingPegs--;
 
         return true;
     }
@@ -147,7 +130,7 @@ public class triangleBoard {
         game[(move.from.row + move.to.row)/2][(move.from.column + move.to.column)/2] = true;
 
         // Increment number of pegs left on the board
-        pegsLeft++;
+        remainingPegs++;
     }
 
     public ArrayList<Move> validMovesFromSpace(Space from) {
@@ -232,7 +215,7 @@ public class triangleBoard {
             this.move(moves.get(i));
 
             // Win condition
-            if (pegsLeft == 1) {
+            if (remainingPegs == 1) {
                 sequence.add(moves.get(i));
                 this.undoMove(moves.get(i));
 
@@ -252,5 +235,23 @@ public class triangleBoard {
         }
 
         return sequence;
+    }
+
+    public static int boolToInt(Boolean bool) {
+        return bool ? 1 : 0;
+    }
+
+    public void printState(boolean[][] board) {
+        for(int i = 0; i < size; i++) {
+            System.out.print("  ");
+            for(int k = 0; k < (size - i - 1); k++) {
+                System.out.print(" ");
+            }
+            for(int j = 0; j <= i; j++) {
+                System.out.print(triangleBoard.boolToInt(board[i][j]));
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
     }
 }

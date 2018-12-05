@@ -31,7 +31,7 @@ public class crackerbarrel {
             game.printState(game.game);
 
             for(int j = 0; j < gameSeq.size(); j++){
-                System.out.println("\n" + gameSeq.get(j) + "\n");
+                //System.out.println("\n" + gameSeq.get(j) + "\n");
 
                 game.move(gameSeq.get(j));
 
