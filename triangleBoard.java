@@ -230,9 +230,6 @@ public class triangleBoard {
         return sequence;
     }
 
-   /* public static int boolToInt(Boolean bool) {
-        return bool ? 1 : 0;
-    } */
 
     public void printState(boolean[][] board) {
         for(int i = 0; i < size; i++) {
@@ -241,7 +238,7 @@ public class triangleBoard {
                 System.out.print(" ");
             }
             for(int j = 0; j <= i; j++) {
-                System.out.print(board[i][j] ? 1 : 0);  //triangleBoard.boolToInt(board[i][j])
+                System.out.print(board[i][j] ? 1 : 0);  
                 System.out.print(" ");
             }
             System.out.println();
