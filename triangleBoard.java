@@ -5,27 +5,6 @@ public class triangleBoard {
     boolean[][] game;
 
 
-    public static class Space {
-        int row, column;
-
-        @Override
-        public String toString() {
-            return "(" + row + "," + column + ")";
-        }
-        public Space(int row, int column) {
-            this.row = row;
-            this.column = column;
-        }
-
-        public boolean isValid(int board_size) {
-            return (row >= 0) && (row < board_size) && (column >= 0) && (column <= row);
-        }
-        public void set(int row, int column) {
-            this.row = row;
-            this.column = column;
-        }
-    }
-
     public class Move {
         triangleBoard.Space from;
         triangleBoard.Space to;
@@ -36,10 +15,10 @@ public class triangleBoard {
             this.to = to;
         }
 
-        public boolean isValid(triangleBoard board) {
+        public boolean canMove(triangleBoard board) {
 
             // make sure this spot even exists
-            if (!from.isValid(board.size) || !to.isValid(board.size)) {
+            if (!from.canMove(board.size) || !to.canMove(board.size)) {
                 return false;
             }
 
@@ -75,6 +54,27 @@ public class triangleBoard {
         }
     }
 
+    public static class Space {
+        int row, column;
+
+        @Override
+        public String toString() {
+            return "(" + row + "," + column + ")";
+        }
+        public Space(int row, int column) {
+            this.row = row;
+            this.column = column;
+        }
+
+        public boolean canMove(int board_size) {
+            return (row >= 0) && (row < board_size) && (column >= 0) && (column <= row);
+        }
+        public void set(int row, int column) {
+            this.row = row;
+            this.column = column;
+        }
+    }
+
     public void setup(int num, triangleBoard.Space spot) {
         size = num;
         game = new boolean[num][num];
@@ -93,7 +93,7 @@ public class triangleBoard {
 
     //jump a peg
     public boolean move(Move move) {
-        if (!move.isValid(this)) {
+        if (!move.canMove(this)) {
             System.out.println("Invalid move.");
             return false;
         }
@@ -132,7 +132,7 @@ public class triangleBoard {
         ArrayList<Move> moves = new ArrayList<Move>();
 
         // see if the move is valid on the game board
-        if (!from.isValid(size)) {
+        if (!from.canMove(size)) {
             return moves;
         }
 
@@ -144,37 +144,37 @@ public class triangleBoard {
         // see if you can move to adjacent spots
         Move move = new Move(from, new Space(from.row - 2, from.column));
 
-        if (move.isValid(this)) {
+        if (move.canMove(this)) {
             moves.add(move);
         }
 
         move = new Move(from, new Space(from.row - 2, from.column - 2));
 
-        if (move.isValid(this)) {
+        if (move.canMove(this)) {
             moves.add(move);
         }
 
         move = new Move(from, new Space(from.row, from.column - 2));
 
-        if (move.isValid(this)) {
+        if (move.canMove(this)) {
             moves.add(move);
         }
 
         move = new Move(from, new Space(from.row, from.column + 2));
 
-        if (move.isValid(this)) {
+        if (move.canMove(this)) {
             moves.add(move);
         }
 
         move = new Move(from, new Space(from.row + 2, from.column));
 
-        if (move.isValid(this)) {
+        if (move.canMove(this)) {
             moves.add(move);
         }
 
         move = new Move(from, new Space(from.row + 2, from.column + 2));
 
-        if (move.isValid(this)) {
+        if (move.canMove(this)) {
             moves.add(move);
         }
 
@@ -231,7 +231,7 @@ public class triangleBoard {
     }
 
 
-    public void printState(boolean[][] board) {
+    public void printBoard(boolean[][] board) {
         for(int i = 0; i < size; i++) {
             System.out.print("  ");
             for(int k = 0; k < (size - i - 1); k++) {
